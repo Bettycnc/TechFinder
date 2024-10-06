@@ -18,14 +18,45 @@
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded-full mt-5">Recherche</button>
     </div>
   </div>
-  <p class="-ml-9 text-center text-lg"> Chiffres clés</p>
-  <ChartCompoment/>
-
-  
+   <!-- Résultats de recherche -->
+    <!-- <ul id="job-list">
+      <li v-for="(job, index) in jobList" :key="index">{{ job.lieu }} - {{ job.post }}</li>
+      <li v-if="jobList.length === 0">Aucun résultat trouvé.</li>
+    </ul> -->
 
 </template>
 <script setup>
 import ChartCompoment from './ChartCompoment.vue'
+// function fetchData(searchQuery = '') {
+//   const url = `http://localhost:3000/api/search?query=${searchQuery}`; 
+//     fetch(url)
+//     .then(response => response.json()) 
+//     .then(data => {
+//       displayData(data);  
+//       })
+//     .catch(error => {
+//       console.error('Erreur de récupération des données :', error);
+//     });
+// }
+
+// function displayData(data) {
+//   const jobList = document.getElementById('job-list');
+//   jobList.innerHTML = ''; 
+//     if (data.length === 0) {
+//       jobList.innerHTML = '<li>Aucun résultat trouvé.</li>';
+//     } else {
+//       data.forEach(item => {
+//         const li = document.createElement('li');
+//         li.textContent = `${item.lieu} - ${item.post}`; 
+//         jobList.appendChild(li); 
+//       });
+//     }
+// }
+
+
+// window.onload = function() {
+//   fetchData(); 
+// };
 
 </script>
 
@@ -50,5 +81,10 @@ import ChartCompoment from './ChartCompoment.vue'
   margin-left: 10px;
   text-decoration: none;
   color: #000000;
+}
+
+.myChartcontents{
+  width: 500px;
+  height: 150px;
 }
 </style>
