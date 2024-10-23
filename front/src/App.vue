@@ -1,62 +1,92 @@
 
 <template>
-  <!-- search-->
-  <div class="banner"> <br>Découvrez les offres d’emplois les plus rechercher dans votre région.
-    <div class="flex items-center justify-center  mt-10" >
+
+  <div class="banner"> <!--  C'est ma section de pour ma recherche-->
+    <br>Découvrez les offres d’emplois les plus recherchées dans votre région.
+    <div class="flex items-center justify-center mt-10">
     
-      <div class="mr-4">
+      <div class="mr-4"> <!-- mon espace recherche pour le job-->
         <label class="block text-black text-base font-bold" for="Poste">Poste</label>
-        <input class="shadow appearance-none border rounded py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Poste" type="text" placeholder="Job title">
+        <input 
+          class="shadow appearance-none border rounded py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-1 border-black" 
+          id="Poste" 
+          type="text" 
+          placeholder="Job title" 
+          v-model="searchPoste" />
       </div>
 
-      <div class="mr-4">
-        <label class="block text-balck text-base font-bold" for="Lieu">Lieu</label>
-        <input class="shadow appearance-none border rounded py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="Lieu" type="text" placeholder="Où ?">
+      <div class="mr-4"> <!-- mon espace recherche pour le lieu-->
+        <label class="block text-black text-base font-bold" for="Lieu">Lieu</label>
+        <input 
+          class="shadow appearance-none border rounded py-1 px-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline border-1 border-black" 
+          id="Lieu" 
+          type="text" 
+          placeholder="Où ?" 
+          v-model="searchLieu" />
       </div>
 
-      <button @click="handleSearch"
-      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded-full mt-5">Recherche</button>
+      <button @click="handleSearch" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-1 rounded-full mt-5">
+        Recherche
+      </button> <!-- ca c'est mon bouton recherche-->
     </div>
   </div>
-   <!-- Résultats de recherche -->
-    <!-- <ul id="job-list">
-      <li v-for="(job, index) in jobList" :key="index">{{ job.lieu }} - {{ job.post }}</li>
-      <li v-if="jobList.length === 0">Aucun résultat trouvé.</li>
-    </ul> -->
+
+<div v-if="loading">Chargement des résultats...</div>   <!-- ca m'affiche un message de chargement pendant la récupération de mes données -->
+  <div v-else>
+    <h2 v-if="jobs.length === 0" class="flex items-center justify-center mt-8">Aucun emploi trouvé.</h2>
+    <div v-else >
+      <ul> <!-- ma liste ds emplois recupérer dans ma recherche -->
+          <li v-for="job in jobs" :key="job._id" class="border-b py-4">
+            <div class="flex items-center justify-center ">
+              <img :src="job.company_logo" alt="Logo de l'entreprise" style="width: 80px; height: auto; margin-right: 10px;"> 
+              <h3 class="font-semibold">{{ job.job_title }}</h3>
+            </div>
+            <div class="flex items-center justify-center ">
+              <p>{{ job.company_name }} - {{ job.location }} </p>
+            </div>
+            <div class="flex items-center justify-center ">
+             <a :href="job.job_url" target="_blank" class="text-blue-500">Postuler</a> 
+            </div>
+            
+          </li>
+        </ul>
+    </div> 
+  </div> 
 
 </template>
-<script setup>
-import ChartCompoment from './ChartCompoment.vue'
-// function fetchData(searchQuery = '') {
-//   const url = `http://localhost:3000/api/search?query=${searchQuery}`; 
-//     fetch(url)
-//     .then(response => response.json()) 
-//     .then(data => {
-//       displayData(data);  
-//       })
-//     .catch(error => {
-//       console.error('Erreur de récupération des données :', error);
-//     });
-// }
 
-// function displayData(data) {
-//   const jobList = document.getElementById('job-list');
-//   jobList.innerHTML = ''; 
-//     if (data.length === 0) {
-//       jobList.innerHTML = '<li>Aucun résultat trouvé.</li>';
-//     } else {
-//       data.forEach(item => {
-//         const li = document.createElement('li');
-//         li.textContent = `${item.lieu} - ${item.post}`; 
-//         jobList.appendChild(li); 
-//       });
-//     }
-// }
-
-
-// window.onload = function() {
-//   fetchData(); 
-// };
+<script>
+import axios from 'axios';
+// ma fonction recherche connecté a ma base de données :
+export default {
+  data() {
+    return {
+      searchPoste: '',
+      searchLieu: '',
+      jobs: [],
+      loading: false,
+    };
+  },
+  methods: {
+    async handleSearch() {
+      this.loading = true;
+      this.jobs = [];
+      try {
+        const response = await axios.get('http://localhost:3000/api/jobs', {
+          params: {
+            poste: this.searchPoste,
+            lieu: this.searchLieu,
+          },
+        });
+        this.jobs = response.data;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des emplois:', error);
+      } finally {
+        this.loading = false;
+      }
+    },
+  },
+};
 
 </script>
 
@@ -83,8 +113,4 @@ import ChartCompoment from './ChartCompoment.vue'
   color: #000000;
 }
 
-.myChartcontents{
-  width: 500px;
-  height: 150px;
-}
 </style>
